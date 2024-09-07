@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Academy</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #D1E9F6; /* Adding lavender background color */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure the body takes full height of the viewport */
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 100px;
+            margin-bottom: 100px;
+            background-color: #fff; /* Change to white background for form container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%; /* Make button take full width */
+        }
+
+        .form-group button:hover {
+            background: #0056b3;
+        }
+
+        .coach-form {
+            margin-top: 20px;
+        }
+
+        .coach-form input {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register Academy</h1>
+        <div class="form-group">
+            <input type="text" id="academyName" required placeholder="Academy Name">
+        </div>
+        <div class="form-group">
+            <input type="text" id="academyAddress" required placeholder="Address">
+        </div>
+        <div class="form-group">
+            <input type="text" id="academyPhone" required placeholder="Phone">
+        </div>
+        <div class="form-group">
+            <input type="email" id="academyEmail" required placeholder="Email">
+        </div>
+        <div class="form-group">
+            <input type="number" id="numCoaches" min="1" required placeholder="Number of Coaches:">
+        </div>
+        <div id="coachesContainer"></div>
+        <div class="form-group">
+            <button onclick="registerAcademy()">Register Academy</button>
+        </div>
+        <div id="thanksMessage" style="display: none;">
+            <h2>Thank you for registering!</h2>
+            <p>Your academy has been registered successfully.</p>
+            <p>Academy ID: <span id="academyId"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('numCoaches').addEventListener('input', function() {
+            const numCoaches = parseInt(this.value);
+            const coachesContainer = document.getElementById('coachesContainer');
+            coachesContainer.innerHTML = '';
+
+            for (let i = 1; i <= numCoaches; i++) {
+                coachesContainer.innerHTML += `
+                    <div class="coach-form">
+                        <h3>Coach ${i}</h3>
+                        <div class="form-group">
+                            <label for="coachName${i}">Name:</label>
+                            <input type="text" id="coachName${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachSpecialization${i}">Specialization:</label>
+                            <input type="text" id="coachSpecialization${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachAchievements${i}">Achievements:</label>
+                            <input type="text" id="coachAchievements${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachPhone${i}">Phone:</label>
+                            <input type="text" id="coachPhone${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachEmail${i}">Email:</label>
+                            <input type="email" id="coachEmail${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachCertifications${i}">Certifications:</label>
+                            <input type="text" id="coachCertifications${i}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coachGender${i}">Gender:</label>
+                            <input type="text" id="coachGender${i}" required>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        function registerAcademy() {
+            const academyName = document.getElementById('academyName').value;
+            const academyAddress = document.getElementById('academyAddress').value;
+            const academyPhone = document.getElementById('academyPhone').value;
+            const academyEmail = document.getElementById('academyEmail').value;
+            const numCoaches = parseInt(document.getElementById('numCoaches').value);
+
+            if (!academyName || !academyAddress || !academyPhone || !academyEmail || isNaN(numCoaches)) {
+                alert('Please fill in all academy details.');
+                return;
+            }
+
+            const academyData = {
+                name: academyName,
+                address: academyAddress,
+                phone: academyPhone,
+                email: academyEmail,
+                coaches: []
+            };
+
+            for (let i = 1; i <= numCoaches; i++) {
+                const coach = {
+                    name: document.getElementById(`coachName${i}`).value,
+                    specialization: document.getElementById(`coachSpecialization${i}`).value,
+                    achievements: document.getElementById(`coachAchievements${i}`).value,
+                    phone: document.getElementById(`coachPhone${i}`).value,
+                    email: document.getElementById(`coachEmail${i}`).value,
+                    certifications: document.getElementById(`coachCertifications${i}`).value,
+                    gender: document.getElementById(`coachGender${i}`).value
+                };
+
+                if (Object.values(coach).some(field => !field)) {
+                    alert(`Please fill in all details for Coach ${i}.`);
+                    return;
+                }
+
+                academyData.coaches.push(coach);
+            }
+
+            const academyId = 'A' + Math.floor(Math.random() * 10000);
+            localStorage.setItem(`academy_${academyId}`, JSON.stringify(academyData));
+
+            document.getElementById('academyId').textContent = academyId;
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('thanksMessage').style.display = 'block';
+            
+            // Optionally, redirect or handle further logic here
+            // window.location.href = 'submit.html';
+            setTimeout(() => {
+                window.location.href = 'submit.html';
+            }, 1);
+        }
+    </script>
+</body>
+</html>
